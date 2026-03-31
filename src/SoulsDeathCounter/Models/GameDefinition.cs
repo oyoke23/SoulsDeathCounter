@@ -57,7 +57,7 @@ namespace SoulsDeathCounter.Models
                 new GameDefinition(
                     name: "Sekiro: Shadows Die Twice",
                     processName: "Sekiro",
-                    baseOffset: 0x3B48D30,
+                    baseOffset: 0x3D5AAC0,
                     pointerOffsets: new[] { 0x90 }
                 ),
                 new GameDefinition(
