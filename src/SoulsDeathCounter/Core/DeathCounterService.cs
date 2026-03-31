@@ -36,7 +36,7 @@ namespace SoulsDeathCounter.Core
 
             var deathCount = ReadDeathCount();
 
-            if (deathCount != _lastDeathCount)
+            if (deathCount >= 0 && deathCount != _lastDeathCount)
             {
                 _lastDeathCount = deathCount;
                 DeathCountChanged?.Invoke(deathCount);
@@ -59,6 +59,7 @@ namespace SoulsDeathCounter.Core
             {
                 _currentGame = detected;
                 _lastDeathCount = ReadDeathCount();
+                if (_lastDeathCount < 0) _lastDeathCount = 0;
                 GameDetected?.Invoke(detected.Definition.Name);
                 DeathCountChanged?.Invoke(_lastDeathCount);
             }
@@ -67,28 +68,23 @@ namespace SoulsDeathCounter.Core
         private int ReadDeathCount()
         {
             if (_currentGame == null)
-                return 0;
+                return -1;
 
             try
             {
-                var finalAddress = _memoryReader.FollowPointerChain(
+                var count = _memoryReader.ReadDeathCount(
                     _currentGame.DeathCounterBaseAddress,
                     _currentGame.Definition.PointerOffsets
                 );
 
-                if (finalAddress == IntPtr.Zero)
-                    return _lastDeathCount;
-
-                var count = _memoryReader.ReadInt32(finalAddress);
-
                 if (count < 0 || count > 100000)
-                    return _lastDeathCount;
+                    return -1;
 
                 return count;
             }
             catch
             {
-                return _lastDeathCount;
+                return -1;
             }
         }
 

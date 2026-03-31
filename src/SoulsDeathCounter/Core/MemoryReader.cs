@@ -13,7 +13,7 @@ namespace SoulsDeathCounter.Core
         private bool _disposed;
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+        private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool ReadProcessMemory(
@@ -21,14 +21,13 @@ namespace SoulsDeathCounter.Core
             IntPtr lpBaseAddress,
             byte[] lpBuffer,
             int dwSize,
-            out int lpNumberOfBytesRead);
+            ref int lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool IsWow64Process(IntPtr hProcess, out bool wow64Process);
+        private static extern bool IsWow64Process(IntPtr hProcess, ref bool wow64Process);
 
         public bool IsAttached => _processHandle != IntPtr.Zero;
 
@@ -41,12 +40,15 @@ namespace SoulsDeathCounter.Core
 
             Detach();
 
-            _processHandle = OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, false, process.Id);
+            _processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, process.Id);
 
             if (_processHandle == IntPtr.Zero)
                 return false;
 
-            Is64BitProcess = !IsRunningUnderWow64(process);
+            bool isWow64 = false;
+            IsWow64Process(_processHandle, ref isWow64);
+            Is64BitProcess = !isWow64;
+
             return true;
         }
 
@@ -59,64 +61,28 @@ namespace SoulsDeathCounter.Core
             }
         }
 
-        public int ReadInt32(IntPtr address)
+        public int ReadDeathCount(IntPtr baseAddress, int[] offsets)
         {
-            byte[] buffer = new byte[4];
-            if (ReadProcessMemory(_processHandle, address, buffer, buffer.Length, out _))
-                return BitConverter.ToInt32(buffer, 0);
-            return 0;
-        }
-
-        public long ReadInt64(IntPtr address)
-        {
+            long address = baseAddress.ToInt64();
             byte[] buffer = new byte[8];
-            if (ReadProcessMemory(_processHandle, address, buffer, buffer.Length, out _))
-                return BitConverter.ToInt64(buffer, 0);
-            return 0;
-        }
+            int discard = 0;
 
-        public IntPtr ReadPointer(IntPtr address)
-        {
-            return Is64BitProcess
-                ? (IntPtr)ReadInt64(address)
-                : (IntPtr)ReadInt32(address);
-        }
-
-        public IntPtr FollowPointerChain(IntPtr baseAddress, int[] offsets)
-        {
-            IntPtr current = baseAddress;
-
-            for (int i = 0; i < offsets.Length; i++)
+            foreach (int offset in offsets)
             {
-                if (offsets[i] == 0 && i > 0)
-                    break;
+                if (address == 0)
+                    return -1;
 
-                if (i < offsets.Length - 1 || offsets.Length == 1)
-                {
-                    current = ReadPointer(current);
-                    if (current == IntPtr.Zero)
-                        return IntPtr.Zero;
-                }
+                address += offset;
 
-                if (i < offsets.Length - 1)
-                    current = IntPtr.Add(current, offsets[i]);
+                if (!ReadProcessMemory(_processHandle, (IntPtr)address, buffer, 8, ref discard))
+                    return -1;
+
+                address = Is64BitProcess
+                    ? BitConverter.ToInt64(buffer, 0)
+                    : BitConverter.ToInt32(buffer, 0);
             }
 
-            if (offsets.Length > 1)
-                current = IntPtr.Add(current, offsets[offsets.Length - 1]);
-
-            return current;
-        }
-
-        private bool IsRunningUnderWow64(Process process)
-        {
-            if (!Environment.Is64BitOperatingSystem)
-                return false;
-
-            if (IsWow64Process(process.Handle, out bool isWow64))
-                return isWow64;
-
-            return false;
+            return (int)address;
         }
 
         public void Dispose()
