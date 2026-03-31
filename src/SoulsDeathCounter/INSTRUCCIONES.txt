@@ -1,0 +1,73 @@
+================================================================================
+                    SOULS DEATH COUNTER - INSTRUCCIONES
+================================================================================
+
+JUEGOS SOPORTADOS:
+------------------
+- Dark Souls: Prepare To Die Edition
+- Dark Souls Remastered
+- Dark Souls II
+- Dark Souls II: Scholar of the First Sin
+- Dark Souls III
+- Sekiro: Shadows Die Twice
+- Elden Ring
+
+================================================================================
+
+COMO USAR:
+----------
+1. Ejecuta SoulsDeathCounter.exe como ADMINISTRADOR (clic derecho > Ejecutar como administrador)
+2. Abre tu juego y carga tu partida
+3. El contador detectará automáticamente el juego y mostrará las muertes
+
+================================================================================
+
+CONFIGURAR EN OBS / STREAMLABS:
+-------------------------------
+
+OPCION 1 - Captura de Ventana (recomendado):
+
+1. En OBS, añade una fuente "Captura de ventana"
+2. Selecciona "SoulsDeathCounter.exe"
+3. Añade un filtro "Clave de color" (Chroma Key)
+4. Color: #404040 (o RGB 64, 64, 64)
+5. Ajusta la similitud hasta que el fondo desaparezca
+
+OPCION 2 - Usar archivo de texto:
+
+1. El programa genera un archivo "deaths.txt" en la misma carpeta
+2. En OBS, añade una fuente "Texto (GDI+)"
+3. Marca "Leer desde archivo"
+4. Selecciona el archivo deaths.txt
+5. El texto se actualiza automáticamente
+
+================================================================================
+
+PERSONALIZAR APARIENCIA:
+------------------------
+Edita el archivo "settings.txt" que se crea automáticamente:
+
+Font_Color: #FFFFFF      (color del texto en hexadecimal)
+Font_Type: Arial         (nombre de la fuente)
+Font_Size: 72            (tamaño de la fuente)
+Font_Style: 1            (0=Normal, 1=Negrita, 2=Italica, 3=Negrita+Italica)
+Background_Color: #404040 (color de fondo para chroma key)
+
+================================================================================
+
+REQUISITOS:
+-----------
+- Windows 10 u 11 (64-bit)
+- .NET Framework 4.8 (viene incluido en Windows 10/11)
+- Ejecutar como Administrador (necesario para leer memoria del juego)
+
+================================================================================
+
+NOTAS:
+------
+- El programa SOLO LEE la memoria, NO modifica nada del juego
+- No será detectado por sistemas anti-cheat
+- Puedes minimizar la ventana y sigue funcionando
+- El contador se guarda automáticamente, no necesitas hacer nada al cerrar
+
+================================================================================

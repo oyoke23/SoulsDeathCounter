@@ -1,74 +1,65 @@
-# THIS COUNTER STOPPED WORKING WITH LATEST DS3 UPDATE THAT RE-ENABLED ONLINE #
-# I will fix it if there is demand for it #
-# Death Counter for Souls games
-Useful for Twitch streaming.
-Developed by CodeRad
+# Souls Death Counter
 
-If you found this app useful, feel free to support my work.
-<p><a href="https://www.paypal.me/KonradJablonski" target="_blank">DONATE</a></p>
+Death counter for Souls games - useful for Twitch/OBS streaming.
 
-Special thanks to cisc0disco
+## Supported Games
 
-Tested on: Windows 10 64bit
+- Dark Souls: Prepare To Die Edition
+- Dark Souls Remastered
+- Dark Souls II
+- Dark Souls II: Scholar of the First Sin
+- Dark Souls III
+- Sekiro: Shadows Die Twice
+- Elden Ring
 
-<p><a href="https://drive.google.com/file/d/1Q4HwfYyeT9CugoCZBBgBlpZ4iTeaAO5p/preview" target="_blank">Example Image</a></p>
+## Download
 
-This application only supports:
-<ol>
-<li>Dark Souls: Prepare To Die</li>
-<li>Dark Souls Remastered</li>
-<li>Dark Souls 2</li>
-<li>Dark Souls 2 Scholar of the first sin</li>
-<li>Dark Souls 3</li>
-<li>Sekiro</li>
-</ol>
-<b>Info:</b>
-The idea behind this software is to run this along side your twitch stream where it will report automatically your death count.
-The death count is retrived from RAM. As this application only READS the information, it will not be picked up by anti-cheat system.
-Reading directly from RAM requires Admin rights, so you will be required to run this application as an admin.
+Go to [Releases](../../releases) and download the latest `SoulsDeathCounter.exe`.
 
-<b>How To Use:</b>
-1. Run the application.
-2. Run your game load your save. 
-3. Get death count from the app screen, or you can use deaths.txt. This text file is updated at the same time as the screen.
-4. Go to Settings.txt to modifiy Font Color, Font Size, Font Type and Font Style of the death counter text.
+## How to Use
 
-<b>StreamLabs: </b>
-1. Run the "Universal_Game_DeathCounter" app.
-2. Run StreamLabs.
-3. In StreamLabs, add new Source "Window Capture"
-4. Under Window, select the "Universal_Game_DeathCounter" app.
-5. Untick "Capture Cursor" and press Done.
-6. Now you need to get rid of the gray box surrounding the text. 
-7. Right Click on the just created source and select "Filters"
-8. Add new Filter type "Color Key"
-9. Select custom color. The background color is in RGB "64,64,64" or in hex 404040
-10. Tweak anyother settings to your liking.
-11. Press Done.
-Now you should have transparent death counter. Next you can put a custom text next to it, something like "DEATHS".
+1. Run `SoulsDeathCounter.exe` as **Administrator** (right-click > Run as administrator)
+2. Open your game and load your save
+3. The counter will automatically detect the game and display your deaths
 
-<b>FAQ:</b>
+## OBS/StreamLabs Setup
 
-<b>Do I need to start fresh run.</b>
-* No. You do not need to start fresh game with this software, you can just start running it mid run and it will know your true death count.
+### Option 1 - Window Capture (recommended)
 
-<B>Can I change font color, or font type?</b>
-* Yes. check "Settings.txt" file for more information.
+1. Add a "Window Capture" source
+2. Select "SoulsDeathCounter.exe"
+3. Add a "Color Key" filter
+4. Set color to `#404040` (RGB 64, 64, 64)
+5. Adjust similarity until background disappears
 
-<b>Do I need to Capture the application screen in order to get the death count?</b>
-* No, there is also deaths.txt file that is updated at the same time. 
+### Option 2 - Text File
 
-<b>Can I minimize the application?</b>
-* Yes, from my testing it is still updating the death count. If it doesnt, just unminimize it. 
+1. The program creates a `deaths.txt` file in the same folder
+2. In OBS, add a "Text (GDI+)" source
+3. Check "Read from file"
+4. Select the `deaths.txt` file
 
-<b>What is the background color for transparency?</b>
-* RGB "64,64,64" or in hex 404040
+## Customization
 
-<b>Do I need to save the death count once I finish my session?</b>
-* No.
+Edit `settings.txt` (created automatically):
 
-<b>Can I download a custom font and use it in this app?</b>
-* Yes, just need to make sure you write the "font name" in exactly the same way.
+```
+Font_Color: #FFFFFF
+Font_Type: Arial
+Font_Size: 72
+Font_Style: 1
+Background_Color: #404040
+```
 
-<b>DOWNLOAD:</b>
-<p><a href="https://drive.google.com/file/d/1Pfadc6U2pCSDthqK4_OchblXczQdnoI4/view?usp=sharing">Download Latest Version (1.0.0.1)</a></p>
+Font styles: 0=Regular, 1=Bold, 2=Italic, 3=Bold+Italic
+
+## Requirements
+
+- Windows 10/11 (64-bit)
+- Run as Administrator (required to read game memory)
+
+## Notes
+
+- This app only READS memory, it does NOT modify anything
+- Will not be detected by anti-cheat systems
+- Death count is saved automatically

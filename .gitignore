@@ -206,6 +206,10 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+# Runtime generated files
+deaths.txt
+settings.txt
+
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts
 **/*.DesktopClient/GeneratedArtifacts
